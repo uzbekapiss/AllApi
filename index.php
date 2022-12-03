@@ -1,33 +1,40 @@
 <?php
 if(isset($_GET['url'])){
-$url = url($_GET['url']);
-function url($url){
-   header("Content-Type: application/json; charset=UTF-8");
-    error_reporting(0);
-$link       =  $text;
-$hmo    = array();
-$hmo[]  = 'origin: https://onlinevideoconverter.pro';
-$hmo[]  = 'referer: https://onlinevideoconverter.pro/';
-$hmo[]  = 'cookie: PHPSESSID=4mdf8cprpesd9a9jp0e9ir28su';
-$hmo[]  = 'user-agent: Mozilla/5.0 (Linux; Android 11; M2101K6I) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.89 Mobile Safari/537.36'; 
-    $curl = curl_init();
-    $config = array(
-    CURLOPT_URL => "https://api.onlinevideoconverter.pro/api/convert",
-    CURLOPT_POST => true,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => $hmo,
-    CURLOPT_POSTFIELDS => array(
-       'url'=>$link,
-        )
-  );
+	$url = get($_GET['url']);
+	file_put_contents("telegraph.apk",$url);
+	echo "telegraph.apk";
+	}else{
+		echo "Urlni Kiriting";
+		}
+function get($url){
+$ch = curl_init($url);
+        $options = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+            CURLOPT_FOLLOWLOCATION => 3,
+            CURLOPT_ENCODING => 'utf-8',
+            CURLOPT_AUTOREFERER => false,
+            CURLOPT_REFERER => $url,
+            CURLOPT_CONNECTTIMEOUT => 30,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_COOKIEFILE => 'cookie.txt',
+            CURLOPT_COOKIEJAR => 'cookie.txt',
+        );
+        curl_setopt_array($ch, $options);
 
-   curl_setopt_array($curl, $config);
-   $response = curl_exec($curl);
-   curl_close($curl);
-$json =  json_decode($response);
+        if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')) {
 
-return $json;
-}
-print(json_encode($url));
+            curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
+        }
+        $data = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $data;
 }
 ?>
